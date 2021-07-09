@@ -16,9 +16,9 @@ AddUp is a chrome extension that allows you to do additions of prices or numbers
 
 ## In action 🔥
 
-### Do your account
+### You need to do your accounting
 https://user-images.githubusercontent.com/26119557/125052223-051d5980-e0a4-11eb-8082-e9d06befd97b.mov
 
-### Cumule sum in different tab
+### You need to sum prices on different websites
 https://user-images.githubusercontent.com/26119557/125061739-ede36980-e0ad-11eb-8cfe-f01d960ac4b1.mov
 
