@@ -210,7 +210,7 @@ const addPopup = async () => {
           <div class="flex justify-center items-center">
             <button
               id="calculate_refresh"
-              title="refresh"
+              title="Refresh"
               type="button"
               style="position: absolute; top: 20px; left: 20px; font-size: 14px;"
               class="rounded-full p-2 transition-colors hover:bg-gray-200 text-sm text-gray-400"
@@ -251,7 +251,7 @@ const addPopup = async () => {
 
         <div class="flex justify-between items-center">
           <div class="flex flex-col items-center justify-center relative">
-            <p class="font-bold text-lg text-gray-700 m-0 cursor-pointer" id="total" style="font-size: 18px;"></p>
+            <p class="font-bold text-lg text-gray-700 m-0 cursor-pointer" id="total" title="Copier" style="font-size: 18px;"></p>
             <p id="toast" style="font-size: 14px;" class="opacity-0 invisible text-gray-600 absolute w-full bg-white text-center">Copier !</p>
           </div>
           <button id="calculate_clear_all" class="opacity-0 text-sm text-red-400" style="font-size: 14px;">
@@ -272,8 +272,6 @@ const handleKeyPressed = () => {
     if (!e.target.classList.contains("sumBox_grab")) {
       return;
     }
-
-    console.log(target);
 
     target.moving = true;
 

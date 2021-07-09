@@ -1,6 +1,11 @@
 {
+  "manifest_version": 3,
+  "name": "AddUp",
+  "short_name": "AddUp",
+  "description": "AddUp est un outil qui vous permet d'additionner les chiffres que vous voulez, sur vos comptes en banque, sites e-commerce ...",
+  "version": "1.0.0",
   "background": {
-    "scripts": ["src/js/background.js"]
+    "service_worker": "background-wrapper.js"
   },
   "content_scripts": [
     {
@@ -9,27 +14,16 @@
       "run_at": "document_end"
     }
   ],
-  "manifest_version": 2,
-  "name": "AddUp",
-  "short_name": "AddUp",
-  "version": "1.0.0",
-  "description": "AddUp est un outil qui vous permet d'additionner tous les chiffres que vous voulez, comptes en banque, sites e-commerce ...",
   "icons": {
     "32": "dist/img/logo-32.png",
     "64": "dist/img/logo-64.png",
     "128": "dist/img/logo-128.png",
     "512": "dist/img/logo-512.png"
   },
-  "browser_action": {
+  "action": {
     "default_icon": "dist/img/icone.png",
-    "default_title": "Add some numbers"
+    "default_title": "AddUp"
   },
-  "permissions": [
-    "background",
-    "activeTab",
-    "http://*/",
-    "https://*/",
-    "storage"
-  ],
+  "permissions": ["background", "storage"],
   "author": "Joffrey Berrier"
 }
