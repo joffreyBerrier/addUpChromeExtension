@@ -16,6 +16,9 @@ Add up is a chrome extension which allows for add any price you want (it's work 
 
 ## In action 🔥
 
+### Do your account
 https://user-images.githubusercontent.com/26119557/125052223-051d5980-e0a4-11eb-8082-e9d06befd97b.mov
+
+### Cumule sum in different tab
 https://user-images.githubusercontent.com/26119557/125061739-ede36980-e0ad-11eb-8cfe-f01d960ac4b1.mov
 
