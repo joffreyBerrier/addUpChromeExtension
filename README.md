@@ -4,7 +4,7 @@
 
 ⌛️*being submitted to google*⌛️
 
-AddUp is a chrome extension that allows you to do additions of prices or numbers. (it's work only with `€ currency`)
+AddUp is a chrome extension that allows you to do additions of prices. (it work's only with `€ currency`)
 - You need to do your accounting ?
 - You need to sum prices on different websites ?
 
