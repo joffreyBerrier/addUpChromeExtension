@@ -2,7 +2,7 @@
 
 :facepunch: An easier way to add some numbers :facepunch:
 
-⌛️*being submitted to google*⌛️
+Extension : https://chrome.google.com/webstore/detail/addup/ahhfnmeappekaojibgkgbggmpniolnam?hl=fr
 
 AddUp is a chrome extension that allows you to do additions of prices. (it work's only with `€ currency`)
 - You need to do your accounting ?
