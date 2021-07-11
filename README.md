@@ -22,3 +22,16 @@ https://user-images.githubusercontent.com/26119557/125052223-051d5980-e0a4-11eb-
 ### You need to sum prices on different websites
 https://user-images.githubusercontent.com/26119557/125061739-ede36980-e0ad-11eb-8cfe-f01d960ac4b1.mov
 
+
+## Contributing to development
+
+- First, fork the repo from github.
+- Clone your forked repo and go to `chrome://extensions/`
+- Enable Developer mode on the right top
+- Click on Load the unpacked extension and open your fork
+- Naming your branch with the gitflow convention:
+  - Feature branches? [feature/]
+  - Release branches? [release/]
+  - Hotfix branches? [hotfix/]
+  - Support branches? [support/]
+- Finally, open a pull request on the official repo, using the source branch from your forked repo.
