@@ -1,4 +1,4 @@
-# Add up 😇
+# Add up 😇 1.0.2
 
 :facepunch: An easier way to add some numbers :facepunch:
 
@@ -11,8 +11,11 @@ AddUp is a chrome extension that allows you to do additions of prices. (it work'
 🔥 This extension is made for you ! 🔥
 
 ## The popup 🔥
-<img width="407" alt="1" src="https://user-images.githubusercontent.com/26119557/125050040-e28a4100-e0a1-11eb-9fd7-2a1e17dec22b.png">
-<img width="409" alt="2" src="https://user-images.githubusercontent.com/26119557/125050049-e4540480-e0a1-11eb-95db-4a9d75457000.png">
+<img width="389" alt="Capture d’écran 2021-07-12 à 18 38 33" src="https://user-images.githubusercontent.com/26119557/125325729-90ffe180-e341-11eb-91a4-e0594ae69c18.png">
+<img width="394" alt="Capture d’écran 2021-07-12 à 18 38 40" src="https://user-images.githubusercontent.com/26119557/125325739-93fad200-e341-11eb-880b-ce89fbc6d4f9.png">
+<img width="405" alt="Capture d’écran 2021-07-12 à 18 38 46" src="https://user-images.githubusercontent.com/26119557/125325747-95c49580-e341-11eb-851c-472c5280f267.png">
+<img width="390" alt="Capture d’écran 2021-07-12 à 18 39 29" src="https://user-images.githubusercontent.com/26119557/125325754-9826ef80-e341-11eb-91a4-c0f8ac830e1b.png">
+<img width="376" alt="Capture d’écran 2021-07-12 à 18 41 11" src="https://user-images.githubusercontent.com/26119557/125325761-99f0b300-e341-11eb-995d-35a47e831542.png">
 
 ## In action 🔥
 
