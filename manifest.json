@@ -3,7 +3,7 @@
   "name": "AddUp",
   "short_name": "AddUp",
   "description": "AddUp est un outil qui vous permet d'additionner les chiffres que vous voulez, sur vos comptes en banque, sites e-commerce ...",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "background": {
     "service_worker": "background-wrapper.js"
   },

@@ -1,8 +1,22 @@
 chrome.runtime.onMessage.addListener(receive);
+let currentDevise = "€";
 const HTML_NO_RESULT = `
-<p class="text-gray-700 text-center" style="font-size: 16px; line-height: 1.4;">
-  Cliquez sur les chiffres que <br /> vous souhaitez additionner
-</p>`;
+<div class="text-center">
+  <p
+    class="text-gray-700"
+    style="font-size: 16px; line-height: 1.4;">
+      Click on the numbers that <br /> you want to add
+    </p>
+
+  <a
+    href="https://github.com/joffreyBerrier/addUpChromeExtension"
+    class="text-gray-300 block absolute left-0 right-0"
+    target="_blank"
+    style="font-size: 12px; line-height: 1.4; color: rgba(156,163,175,1); bottom: 24px;"
+  >
+    Documentation
+  </a>
+</div>`;
 
 let showPopup = false;
 let clipboard = {};
@@ -21,15 +35,20 @@ const changeDomAElements = () => {
 };
 
 // Find correct Number
-const findNumber = (string) => {
+const findNumber = (string, devise) => {
   let str = string;
 
   if (string) {
-    if (str.includes("€")) {
-      str = str.replace("€", ",");
+    if (str.includes(devise)) {
+      currentDevise = devise;
+      if (devise === "$") {
+        str = str.replace(devise, "");
+      } else {
+        str = str.replace(devise, ",");
+      }
     }
 
-    var matches = str.replace(",", ".").replace(/[^0-9&.]/g, "");
+    const matches = str.replace(",", ".").replace(/[^0-9&.]/g, "");
 
     if (matches && matches.length > 0) {
       if (Number(matches)) return matches;
@@ -41,40 +60,132 @@ const findNumber = (string) => {
   return null;
 };
 
-const handler = (e) => {
-  e.preventDefault();
+const getNumber = (e, value, devise) => {
+  const NUMBER = Number(findNumber(value, devise));
 
+  if (NUMBER) {
+    return calculate(e, NUMBER);
+  }
+};
+
+const handler = (e) => {
   const ignoredElement = document.getElementById("sumBox");
 
   if (ignoredElement) {
     const isIgnoredElementClicked = ignoredElement.contains(e.target);
 
     if (!isIgnoredElementClicked) {
-      const NUMBER = Number(findNumber(e.target.innerText));
+      e.preventDefault();
+      e.stopPropagation();
 
-      if (NUMBER) {
-        calculate(e, NUMBER);
-      }
-    } else if (
-      e?.target?.parentElement?.id === "numbers" &&
-      e?.target?.dataset?.matchId
-    ) {
-      // Scroll to correct number
-      const elm = document.querySelector(
-        `[data-id="${e.target.dataset.matchId}"]`
-      );
+      const devises = ["€", "$"];
 
-      if (elm) {
-        window.scrollTo({
-          top:
-            elm.getBoundingClientRect().top -
-            elm.getBoundingClientRect().height,
-          left: 0,
-          behavior: "smooth",
-        });
+      devises.forEach((devise) => {
+        if (e.target.innerText.includes(devise)) {
+          getNumber(e, e.target.innerText, devise);
+        } else if (e.target.parentElement.innerText.includes(devise)) {
+          getNumber(e, e.target.parentElement.innerText, devise);
+        }
+      });
+    } else {
+      const data = e?.target?.dataset;
+
+      if (data?.matchId) {
+        const elm = document.querySelector(
+          `[data-id="${e.target.dataset.matchId}"]`
+        );
+
+        if (elm) {
+          window.scrollTo({
+            top:
+              elm.getBoundingClientRect().top -
+              elm.getBoundingClientRect().height,
+            left: 0,
+            behavior: "smooth",
+          });
+        }
+      } else if (data?.deleteButton) {
+        deleteNumber(Number(data.deleteButton));
+        updatePopup();
+
+        // Show NoResult
+        if (deleteNumberIds.length === numbers.length) {
+          clearHtml();
+        }
       }
     }
   }
+};
+
+const promptNumber = (number, devise) => {
+  if (devise === "$") {
+    return `${devise} ${number}`;
+  }
+
+  return `${number} ${devise}`;
+};
+
+const deleteNumber = (id) => {
+  deleteNumberIds.push(id);
+
+  deleteNumberIds.forEach((deleteId) => {
+    const elm = document.querySelector(`[data-id="${deleteId}"]`);
+    if (elm) {
+      elm.style.backgroundColor = "";
+      elm.style.color = "";
+      elm.style.padding = "";
+      elm.style.borderRadius = "";
+      elm.style.fontSize = "";
+      elm.style.width = "";
+      elm.classList.remove("block", "shadow");
+      elm.dataset.id = null;
+    }
+  });
+};
+
+const updatePopup = () => {
+  // Enrase html
+  document.getElementById("numbers").innerHTML = "";
+
+  // Add all numbers
+  const selectedNumbers = objectNumbers.filter(
+    (number) => !deleteNumberIds.includes(number.id)
+  );
+  const deleteButton = (buttonId) => {
+    return `
+      <svg data-delete-button="${buttonId}" xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;" class="text-sm text-red-400 h-4 w-4 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+      </svg>
+    `;
+  };
+
+  selectedNumbers.forEach((number) => {
+    document.getElementById("numbers").innerHTML += `
+      <p class="flex justify-between items-center" style="margin-bottom: 8px;">
+        <span
+          data-match-id="${number.id}"
+          class="sum cursor-pointer block text-gray-600">
+            ${promptNumber(number.value, currentDevise)} +
+        </span>
+        ${deleteButton(number.id)}
+      </p>`;
+  });
+
+  document.getElementById("calculate_container_price").scrollTo({
+    top: document.getElementById("calculate_container_price").clientHeight,
+    left: 0,
+    behavior: "smooth",
+  });
+
+  const subTotal = selectedNumbers
+    .map((x) => x.value)
+    .reduce((a, b) => a + b, 0);
+  const total = Math.round(subTotal * 100) / 100;
+
+  document.getElementById("total").innerHTML = `Total : ${promptNumber(
+    total,
+    currentDevise
+  )}`;
 };
 
 const calculate = (e, NUMBER) => {
@@ -89,24 +200,11 @@ const calculate = (e, NUMBER) => {
     }
 
     if (e?.target?.dataset?.id && e?.target?.dataset?.id !== "null") {
-      // already exist
       const id =
         Number(e?.target?.dataset?.id) > 0 ? Number(e?.target?.dataset?.id) : 0;
 
-      deleteNumberIds.push(id);
-      deleteNumberIds.forEach((deleteId) => {
-        const elm = document.querySelector(`[data-id="${deleteId}"]`);
-        if (elm) {
-          e.target.style.backgroundColor = "";
-          e.target.style.color = "";
-          e.target.style.padding = "";
-          e.target.style.borderRadius = "";
-          e.target.style.fontSize = "";
-          e.target.style.width = "";
-          e.target.classList.remove("block", "shadow");
-          elm.dataset.id = null;
-        }
-      });
+      deleteNumber(id);
+      // already exist
     } else {
       const id = numbers.length;
       if (e) {
@@ -127,31 +225,7 @@ const calculate = (e, NUMBER) => {
       });
     }
 
-    // Enrase html
-    document.getElementById("numbers").innerHTML = "";
-
-    // Add all numbers
-    const selectedNumbers = objectNumbers.filter(
-      (number) => !deleteNumberIds.includes(number.id)
-    );
-    selectedNumbers.forEach((number) => {
-      document.getElementById(
-        "numbers"
-      ).innerHTML += `<span data-match-id="${number.id}" class="sum cursor-pointer block text-gray-600">${number.value}€ +</span>`;
-    });
-
-    document.getElementById("calculate_container_price").scrollTo({
-      top: document.getElementById("calculate_container_price").clientHeight,
-      left: 0,
-      behavior: "smooth",
-    });
-
-    const subTotal = selectedNumbers
-      .map((x) => x.value)
-      .reduce((a, b) => a + b, 0);
-    const total = Math.round(subTotal * 100) / 100;
-
-    document.getElementById("total").innerHTML = `Total : ${total}€`;
+    updatePopup();
   }
 };
 
@@ -169,7 +243,10 @@ const addPopup = async () => {
             Site :<br/> <strong>${clipboard.website}</strong>
           </p>
           <p class="text-center w-1/2" style="line-height: 1.4;">
-            Montant :<br/> <strong>${clipboard.sum} €</strong>
+            Montant :<br/> <strong>${promptNumber(
+              clipboard.sum,
+              currentDevise
+            )}</strong>
           </p>
         </div>
 
@@ -198,6 +275,32 @@ const addPopup = async () => {
       .grid {
         display: flex!important;
       }
+      .addup_tooltip:before {
+        content: attr(data-title);
+        position: absolute;
+        top: calc(100% + 10px);
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+        background: white;
+        box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+        border-radius: 100px;
+        width: max-content;
+        padding-left: 22px;
+        padding-right: 22px;
+        padding-top: 11px;
+        padding-bottom: 11px;
+        opacity: 0;
+        visibility: hidden;
+        transition: all ease .3s;
+        font-size: 12px;
+        color: rgba(156,163,175,1);
+        font-weight: 300;
+      }
+      .addup_tooltip:hover:before {
+        opacity: 1;
+        visibility: visible;
+      }
       </style>
       <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
 
@@ -212,8 +315,9 @@ const addPopup = async () => {
               id="calculate_refresh"
               title="Refresh"
               type="button"
-              style="position: absolute; top: 20px; left: 20px; font-size: 14px;"
-              class="rounded-full p-2 transition-colors hover:bg-gray-200 text-sm text-gray-400"
+              style="position: absolute; top: 20px; left: 20px; font-size: 12px;"
+              class="addup_tooltip rounded-full p-2 transition-colors hover:bg-gray-200 text-sm text-gray-400"
+              data-title="Refresh extension"
             >
               <svg xmlns="http://www.w3.org/2000/svg" style="width: 16px; height: 16px;" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -227,14 +331,15 @@ const addPopup = async () => {
                 /////////////
               </div>
               😇 </br>
-              Additionnez
+              Add Up
             </h1>
             <button
               id="calculate_close"
               title="Fermer"
               type="button"
-              style="position: absolute; top: 20px; right: 20px; font-size: 14px;"
-              class="rounded-full p-2 transition-colors hover:bg-gray-200 text-sm text-gray-400"
+              style="position: absolute; top: 20px; right: 20px; font-size: 12px;"
+              class="addup_tooltip rounded-full p-2 transition-colors hover:bg-gray-200 text-sm text-gray-400"
+              data-title="Close popup"
             >
               <svg xmlns="http://www.w3.org/2000/svg" style="width: 16px; height: 16px;" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -251,11 +356,11 @@ const addPopup = async () => {
 
         <div class="flex justify-between items-center">
           <div class="flex flex-col items-center justify-center relative">
-            <p class="font-bold text-lg text-gray-700 m-0 cursor-pointer" id="total" title="Copier" style="font-size: 18px;"></p>
-            <p id="toast" style="font-size: 14px;" class="opacity-0 invisible text-gray-600 absolute w-full bg-white text-center">Copier !</p>
+            <p class="addup_tooltip font-bold text-lg text-gray-700 m-0 cursor-pointer" id="total" data-title="Copy Total" style="font-size: 18px;"></p>
+            <p id="toast" style="font-size: 14px;" class="opacity-0 invisible text-gray-600 absolute w-full bg-white text-center">Copy !</p>
           </div>
           <button id="calculate_clear_all" class="opacity-0 text-sm text-red-400" style="font-size: 14px;">
-            Désélectionner
+            Unselect All
           </button>
         </div>
       </div>
@@ -334,7 +439,7 @@ const saveData = async () => {
   const totalSum = document
     .getElementById("total")
     .innerText.replace("Total : ", "")
-    .replace("€", "");
+    .replace(currentDevise, "");
   const value = { website: websiteName, sum: Number(totalSum) };
   await toPromise((resolve, reject) => {
     chrome.storage.local.set({ pages: value }, () => {
@@ -382,6 +487,20 @@ const closePopup = () => {
   document.location.reload();
 };
 
+const clearHtml = () => {
+  document.getElementById("numbers").innerHTML = HTML_NO_RESULT;
+  document.getElementById("total").innerHTML = "";
+
+  document
+    .getElementById("calculate_clear_all")
+    .classList.remove("opacity-100");
+  document.getElementById("calculate_clear_all").classList.add("opacity-0");
+
+  numbers = [];
+  deleteNumberIds = [];
+  objectNumbers = [];
+};
+
 const clearAll = () => {
   objectNumbers.forEach((number) => {
     const elm = document.querySelector(`[data-id="${number.id}"]`);
@@ -401,17 +520,7 @@ const clearAll = () => {
     }
   });
 
-  document.getElementById("numbers").innerHTML = HTML_NO_RESULT;
-  document.getElementById("total").innerHTML = "";
-
-  document
-    .getElementById("calculate_clear_all")
-    .classList.remove("opacity-100");
-  document.getElementById("calculate_clear_all").classList.add("opacity-0");
-
-  numbers = [];
-  deleteNumberIds = [];
-  objectNumbers = [];
+  clearHtml();
 };
 
 async function receive(msg) {
