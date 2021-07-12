@@ -4,7 +4,7 @@
 
 Extension : https://chrome.google.com/webstore/detail/addup/ahhfnmeappekaojibgkgbggmpniolnam?hl=fr
 
-AddUp is a chrome extension that allows you to do additions of prices. (it work's only with `€ currency`)
+AddUp is a chrome extension that allows you to do additions of prices. (it work's only with `€ and $`)
 - You need to do your accounting ?
 - You need to sum prices on different websites ?
 
@@ -26,15 +26,15 @@ https://user-images.githubusercontent.com/26119557/125052223-051d5980-e0a4-11eb-
 https://user-images.githubusercontent.com/26119557/125061739-ede36980-e0ad-11eb-8cfe-f01d960ac4b1.mov
 
 
-## Contributing to development
+## Contributing to development 💁‍♂️💁‍♀️
 
-- First, fork the repo from github.
+- First create an issue
+- Fork the repo from github.
 - Clone your forked repo and go to `chrome://extensions/`
-- Enable Developer mode on the right top
-- Click on Load the unpacked extension and open your fork
+- Then, make your changes on any branch you want and push it.
 - Naming your branch with the gitflow convention:
-  - Feature branches? [feature/]
-  - Release branches? [release/]
-  - Hotfix branches? [hotfix/]
-  - Support branches? [support/]
+  - Feature branches? [feature/issueId]
+  - Release branches? [release/issueId]
+  - Hotfix branches? [hotfix/issueId]
+  - Support branches? [support/issueId]
 - Finally, open a pull request on the official repo, using the source branch from your forked repo.
